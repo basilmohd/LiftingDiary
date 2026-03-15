@@ -1,0 +1,23 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+npm run dev      # Start dev server (http://localhost:3000)
+npm run build    # Production build
+npm run lint     # Run ESLint
+```
+
+No test framework is configured yet.
+
+## Architecture
+
+This is a **Next.js 16 App Router** project (TypeScript + Tailwind CSS v4) for tracking weightlifting workouts.
+
+**Auth**: Clerk (`@clerk/nextjs`) wraps the entire app via `ClerkProvider` in `app/layout.tsx`. The Clerk middleware is in `proxy.ts` — note this file should likely be renamed to `middleware.ts` to work correctly with Next.js middleware conventions.
+
+**Styling**: Tailwind CSS v4 with PostCSS. Fonts are Geist Sans and Geist Mono loaded via `next/font/google`.
+
+**Current state**: Very early — `app/page.tsx` is still the default Create Next App template. The auth shell (ClerkProvider + sign-in/sign-up/user buttons in the header) is in place in `app/layout.tsx`.
