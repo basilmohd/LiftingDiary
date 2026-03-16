@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## IMPORTANT: Docs-First Rule
+
+Before generating any code, **always check the `/docs` directory first** for relevant documentation. If a docs file exists for the technology or feature you're working with, read it before writing any code. The `/docs` directory contains authoritative guidance that takes precedence over general knowledge.
+
 ## Commands
 
 ```bash
@@ -11,6 +15,8 @@ npm run lint     # Run ESLint
 ```
 
 No test framework is configured yet.
+
+- /docs/ui.md
 
 ## Architecture
 
