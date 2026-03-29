@@ -34,10 +34,10 @@ export default function RootLayout({
             <h1 className="text-xl font-bold">Lifting Diary</h1>
             <div className="flex items-center gap-2">
             <Show when="signed-out">
-              <SignInButton mode="modal" >
+              <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
                 <button className="px-4 py-2 text-sm font-medium text-gray">Sign In</button>
               </SignInButton>
-              <SignUpButton mode="modal" >
+              <SignUpButton mode="modal" fallbackRedirectUrl="/dashboard">
                 <button className="px-4 py-2 text-sm font-medium text-gray">Sign Up</button>
               </SignUpButton>
             </Show>

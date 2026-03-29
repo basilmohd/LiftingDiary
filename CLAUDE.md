@@ -4,7 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## IMPORTANT: Docs-First Rule
 
-Before generating any code, **always check the `/docs` directory first** for relevant documentation. If a docs file exists for the technology or feature you're working with, read it before writing any code. The `/docs` directory contains authoritative guidance that takes precedence over general knowledge.
+Before generating any code, **always check the `/docs` directory first** for relevant documentation. If a docs file exists for the technology or feature you're working with, read it before writing any code. The `/docs` directory contains authoritative guidance that takes precedence over general knowledge:
+
+- /docs/ui.md
+- /docs/data-fetching.md
+- /docs/data-mutations.md
+- /docs/auth.md
 
 ## Commands
 
@@ -13,10 +18,8 @@ npm run dev      # Start dev server (http://localhost:3000)
 npm run build    # Production build
 npm run lint     # Run ESLint
 ```
-
 No test framework is configured yet.
 
-- /docs/ui.md
 
 ## Architecture
 
