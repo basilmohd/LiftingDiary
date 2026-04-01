@@ -10,9 +10,10 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   date: Date;
+  label: string;
 };
 
-export function WorkoutDatePicker({ date }: Props) {
+export function WorkoutDatePicker({ date, label }: Props) {
   const router = useRouter();
 
   function handleSelect(selected: Date | undefined) {
@@ -30,7 +31,7 @@ export function WorkoutDatePicker({ date }: Props) {
             className={cn("w-48 justify-start text-left font-normal")}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {format(date, "do MMM yyyy")}
+            {label}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

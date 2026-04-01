@@ -27,7 +27,7 @@ export default async function DashboardPage({ searchParams }: Props) {
 
         {/* Right: date picker + workout log */}
         <div className="flex flex-col gap-6">
-          <WorkoutDatePicker date={date} />
+          <WorkoutDatePicker date={date} label={format(date, "do MMM yyyy")} />
 
           {workouts.length === 0 ? (
             <p className="text-sm text-muted-foreground">

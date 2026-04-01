@@ -10,6 +10,8 @@ Before generating any code, **always check the `/docs` directory first** for rel
 - /docs/data-fetching.md
 - /docs/data-mutations.md
 - /docs/auth.md
+- /docs/server-components.md
+- /docs/routing.md
 
 ## Commands
 
@@ -25,7 +27,7 @@ No test framework is configured yet.
 
 This is a **Next.js 16 App Router** project (TypeScript + Tailwind CSS v4) for tracking weightlifting workouts.
 
-**Auth**: Clerk (`@clerk/nextjs`) wraps the entire app via `ClerkProvider` in `app/layout.tsx`. The Clerk middleware is in `proxy.ts` — note this file should likely be renamed to `middleware.ts` to work correctly with Next.js middleware conventions.
+**Auth**: Clerk (`@clerk/nextjs`) wraps the entire app via `ClerkProvider` in `app/layout.tsx`. The Clerk middleware lives at `src/middleware.ts` and protects all `/dashboard` routes.
 
 **Styling**: Tailwind CSS v4 with PostCSS. Fonts are Geist Sans and Geist Mono loaded via `next/font/google`.
 
