@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { format, parseISO } from "date-fns";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkoutDatePicker } from "./_components/WorkoutDatePicker";
 import { AddWorkoutForm } from "./_components/AddWorkoutForm";
@@ -36,7 +37,8 @@ export default async function DashboardPage({ searchParams }: Props) {
           ) : (
             <div className="flex flex-col gap-4">
               {workouts.map((workout) => (
-                <Card key={workout.id}>
+                <Link key={workout.id} href={`/dashboard/workout/${workout.id}`}>
+                <Card className="hover:bg-accent transition-colors cursor-pointer">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">
                       {workout.name ?? format(workout.startedAt, "do MMM yyyy")}
@@ -66,6 +68,7 @@ export default async function DashboardPage({ searchParams }: Props) {
                     )}
                   </CardContent>
                 </Card>
+                </Link>
               ))}
             </div>
           )}
