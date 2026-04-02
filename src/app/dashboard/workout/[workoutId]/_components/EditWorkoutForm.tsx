@@ -417,8 +417,10 @@ export function EditWorkoutForm({
             <Select
               value={selectedExercise}
               onValueChange={(val) => {
-                setSelectedExercise(val);
-                setExerciseInput(val);
+                if(val) {
+                  setSelectedExercise(val ?? "");
+                  setExerciseInput(val ?? "");
+                }
               }}
             >
               <SelectTrigger className="w-52">

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { format, parseISO } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { getWorkoutById, getExercises } from "@/data/workouts";
 import { EditWorkoutForm } from "./_components/EditWorkoutForm";
 
@@ -33,9 +33,7 @@ export default async function EditWorkoutPage({ params, searchParams }: Props) {
     <main className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-2xl font-bold">Edit Workout</h2>
-        <Button asChild variant="outline" size="sm">
-          <Link href={backHref}>← Back to Dashboard</Link>
-        </Button>
+        <Link href={backHref} className={buttonVariants({ variant: "outline", size: "sm" })}>← Back to Dashboard</Link>
       </div>
       <p className="text-sm text-muted-foreground mb-6">Date: {dateLabel}</p>
 
