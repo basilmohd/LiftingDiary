@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,10 +38,10 @@ export default function RootLayout({
               <div className="flex items-center gap-2">
                 <Show when="signed-out">
                   <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
-                    <button className="px-4 py-2 text-sm font-medium text-gray">Sign In</button>
+                    <Button variant="outline" className="cursor-pointer">Sign In</Button>
                   </SignInButton>
                   <SignUpButton mode="modal" fallbackRedirectUrl="/dashboard">
-                    <button className="px-4 py-2 text-sm font-medium text-gray">Sign Up</button>
+                    <Button className="cursor-pointer">Sign Up</Button>
                   </SignUpButton>
                 </Show>
                 <Show when="signed-in">
