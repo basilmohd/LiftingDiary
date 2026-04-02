@@ -57,6 +57,17 @@ export async function insertWorkout(input: InsertWorkoutInput): Promise<void> {
   ]);
 }
 
+export async function insertEmptyWorkout(input: { userId: string; startedAt: Date }): Promise<string> {
+  const workoutId = randomUUID();
+  await db.insert(workouts).values({
+    id: workoutId,
+    userId: input.userId,
+    name: null,
+    startedAt: input.startedAt,
+  });
+  return workoutId;
+}
+
 export type UpdateWorkoutInput = {
   workoutId: string;
   userId: string;

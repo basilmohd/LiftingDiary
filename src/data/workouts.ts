@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { workouts, workoutExercises, exercises, sets } from "@/db/schema";
-import { eq, and, gte, lt } from "drizzle-orm";
+import { eq, and, gte, lt, asc } from "drizzle-orm";
 import { startOfDay, endOfDay } from "date-fns";
 
 type WorkoutWithDetails = {
@@ -142,4 +142,12 @@ export async function getWorkoutById(
   }
 
   return workout;
+}
+
+export async function getExercises(): Promise<string[]> {
+  const rows = await db
+    .select({ name: exercises.name })
+    .from(exercises)
+    .orderBy(asc(exercises.name));
+  return rows.map((r) => r.name);
 }

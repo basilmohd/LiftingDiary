@@ -1,7 +1,7 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { insertWorkout } from "@/data/mutations";
+import { insertWorkout, insertEmptyWorkout } from "@/data/mutations";
 
 type SetInput = { reps: number; weight: number };
 type ExerciseInput = { name: string; sets: SetInput[] };
@@ -13,6 +13,20 @@ export type CreateWorkoutInput = {
 };
 
 export type CreateWorkoutResult = { success: true } | { success: false; error: string };
+
+export type CreateEmptyWorkoutResult = { success: true; workoutId: string } | { success: false; error: string };
+
+export async function createEmptyWorkout(startedAt: string): Promise<CreateEmptyWorkoutResult> {
+  const { userId } = await auth();
+  if (!userId) return { success: false, error: "Not authenticated" };
+
+  try {
+    const workoutId = await insertEmptyWorkout({ userId, startedAt: new Date(startedAt) });
+    return { success: true, workoutId };
+  } catch {
+    return { success: false, error: "Failed to create workout" };
+  }
+}
 
 export async function createWorkout(input: CreateWorkoutInput): Promise<CreateWorkoutResult> {
   const { userId } = await auth();
