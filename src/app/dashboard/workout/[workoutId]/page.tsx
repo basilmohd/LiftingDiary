@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { format, parseISO } from "date-fns";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { getWorkoutById, getExercises } from "@/data/workouts";
 import { EditWorkoutForm } from "./_components/EditWorkoutForm";
 
