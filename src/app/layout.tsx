@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, Show, UserButton } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { Dumbbell } from "lucide-react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,16 +34,11 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ClerkProvider>
             <header className="flex justify-between items-center p-4 border-b">
-              <h1 className="text-xl font-bold">Lifting Diary</h1>
+              <h1 className="flex items-center gap-2 text-xl font-bold">
+                <Dumbbell className="h-5 w-5" />
+                Lifting Diary
+              </h1>
               <div className="flex items-center gap-2">
-                <Show when="signed-out">
-                  <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
-                    <Button variant="outline" className="cursor-pointer">Sign In</Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal" fallbackRedirectUrl="/dashboard">
-                    <Button className="cursor-pointer">Sign Up</Button>
-                  </SignUpButton>
-                </Show>
                 <Show when="signed-in">
                   <UserButton />
                 </Show>

@@ -8,9 +8,10 @@ import { createEmptyWorkout } from "../actions";
 
 type Props = {
   date: Date;
+  size?: "sm" | "default";
 };
 
-export function LogWorkoutButton({ date }: Props) {
+export function LogWorkoutButton({ date, size = "default" }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
@@ -25,8 +26,8 @@ export function LogWorkoutButton({ date }: Props) {
   }
 
   return (
-    <Button onClick={handleClick} disabled={pending}>
-      {pending ? "Creating..." : "Log New Workout"}
+    <Button onClick={handleClick} disabled={pending} size={size}>
+      {pending ? "Creating..." : "Log Workout"}
     </Button>
   );
 }
