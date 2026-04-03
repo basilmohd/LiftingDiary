@@ -24,9 +24,12 @@ export default function Home() {
           </SignInButton>
         </Show>
         <Show when="signed-in">
-          <Button asChild>
-            <Link href="/dashboard">Go to Dashboard</Link>
-          </Button>
+          <Link
+            href="/dashboard"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
+          >
+            Go to Dashboard
+          </Link>
         </Show>
       </div>
     </main>

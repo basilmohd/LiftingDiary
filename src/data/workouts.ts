@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { workouts, workoutExercises, exercises, sets } from "@/db/schema";
-import { eq, and, gte, lt, asc } from "drizzle-orm";
-import { startOfDay, endOfDay } from "date-fns";
+import { eq, and, gte, lt, lte, asc, desc, sql, count } from "drizzle-orm";
+import { startOfDay, endOfDay, startOfYear, endOfYear, subDays, format } from "date-fns";
 
 type WorkoutWithDetails = {
   id: string;
@@ -150,4 +150,202 @@ export async function getExercises(): Promise<string[]> {
     .from(exercises)
     .orderBy(asc(exercises.name));
   return rows.map((r) => r.name);
+}
+
+export async function getWorkoutCountsByMonth(
+  userId: string,
+  year: number
+): Promise<{ month: number; count: number }[]> {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const yearEnd = endOfYear(new Date(year, 0, 1));
+
+  const rows = await db
+    .select({
+      month: sql<number>`EXTRACT(MONTH FROM ${workouts.startedAt})::int`,
+      count: count(),
+    })
+    .from(workouts)
+    .where(
+      and(
+        eq(workouts.userId, userId),
+        gte(workouts.startedAt, yearStart),
+        lte(workouts.startedAt, yearEnd)
+      )
+    )
+    .groupBy(sql`EXTRACT(MONTH FROM ${workouts.startedAt})`)
+    .orderBy(sql`EXTRACT(MONTH FROM ${workouts.startedAt})`);
+
+  const monthMap = new Map(rows.map((r) => [r.month, r.count]));
+  return Array.from({ length: 12 }, (_, i) => ({
+    month: i + 1,
+    count: monthMap.get(i + 1) ?? 0,
+  }));
+}
+
+export async function getVolumeByMonth(
+  userId: string,
+  year: number
+): Promise<{ month: number; volume: number }[]> {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const yearEnd = endOfYear(new Date(year, 0, 1));
+
+  const rows = await db
+    .select({
+      month: sql<number>`EXTRACT(MONTH FROM ${workouts.startedAt})::int`,
+      volume: sql<number>`COALESCE(SUM(${sets.weight}::numeric * ${sets.reps}::numeric), 0)::float`,
+    })
+    .from(workouts)
+    .leftJoin(workoutExercises, eq(workoutExercises.workoutId, workouts.id))
+    .leftJoin(sets, eq(sets.workoutExerciseId, workoutExercises.id))
+    .where(
+      and(
+        eq(workouts.userId, userId),
+        gte(workouts.startedAt, yearStart),
+        lte(workouts.startedAt, yearEnd)
+      )
+    )
+    .groupBy(sql`EXTRACT(MONTH FROM ${workouts.startedAt})`)
+    .orderBy(sql`EXTRACT(MONTH FROM ${workouts.startedAt})`);
+
+  const monthMap = new Map(rows.map((r) => [r.month, r.volume]));
+  return Array.from({ length: 12 }, (_, i) => ({
+    month: i + 1,
+    volume: monthMap.get(i + 1) ?? 0,
+  }));
+}
+
+export async function getExercisesForUser(
+  userId: string,
+  year: number
+): Promise<string[]> {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const yearEnd = endOfYear(new Date(year, 0, 1));
+
+  const rows = await db
+    .selectDistinct({ name: exercises.name })
+    .from(workouts)
+    .innerJoin(workoutExercises, eq(workoutExercises.workoutId, workouts.id))
+    .innerJoin(exercises, eq(exercises.id, workoutExercises.exerciseId))
+    .where(
+      and(
+        eq(workouts.userId, userId),
+        gte(workouts.startedAt, yearStart),
+        lte(workouts.startedAt, yearEnd)
+      )
+    )
+    .orderBy(asc(exercises.name));
+
+  return rows.map((r) => r.name);
+}
+
+export async function getVolumeByMonthForExercise(
+  userId: string,
+  year: number,
+  exerciseName: string
+): Promise<{ month: number; volume: number }[]> {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const yearEnd = endOfYear(new Date(year, 0, 1));
+
+  const rows = await db
+    .select({
+      month: sql<number>`EXTRACT(MONTH FROM ${workouts.startedAt})::int`,
+      volume: sql<number>`COALESCE(SUM(${sets.weight}::numeric * ${sets.reps}::numeric), 0)::float`,
+    })
+    .from(workouts)
+    .innerJoin(workoutExercises, eq(workoutExercises.workoutId, workouts.id))
+    .innerJoin(exercises, eq(exercises.id, workoutExercises.exerciseId))
+    .innerJoin(sets, eq(sets.workoutExerciseId, workoutExercises.id))
+    .where(
+      and(
+        eq(workouts.userId, userId),
+        gte(workouts.startedAt, yearStart),
+        lte(workouts.startedAt, yearEnd),
+        eq(exercises.name, exerciseName)
+      )
+    )
+    .groupBy(sql`EXTRACT(MONTH FROM ${workouts.startedAt})`)
+    .orderBy(sql`EXTRACT(MONTH FROM ${workouts.startedAt})`);
+
+  const monthMap = new Map(rows.map((r) => [r.month, r.volume]));
+  return Array.from({ length: 12 }, (_, i) => ({
+    month: i + 1,
+    volume: monthMap.get(i + 1) ?? 0,
+  }));
+}
+
+export async function getTopExercises(
+  userId: string,
+  year: number,
+  limit: number = 5
+): Promise<{ name: string; count: number }[]> {
+  const yearStart = startOfYear(new Date(year, 0, 1));
+  const yearEnd = endOfYear(new Date(year, 0, 1));
+
+  const rows = await db
+    .select({
+      name: exercises.name,
+      count: count(),
+    })
+    .from(workouts)
+    .innerJoin(workoutExercises, eq(workoutExercises.workoutId, workouts.id))
+    .innerJoin(exercises, eq(exercises.id, workoutExercises.exerciseId))
+    .where(
+      and(
+        eq(workouts.userId, userId),
+        gte(workouts.startedAt, yearStart),
+        lte(workouts.startedAt, yearEnd)
+      )
+    )
+    .groupBy(exercises.id, exercises.name)
+    .orderBy(desc(count()))
+    .limit(limit);
+
+  return rows.map((r) => ({ name: r.name, count: r.count }));
+}
+
+export async function getWorkoutStreak(
+  userId: string
+): Promise<{ current: number; longest: number }> {
+  const rows = await db
+    .selectDistinct({
+      day: sql<string>`DATE(${workouts.startedAt})`,
+    })
+    .from(workouts)
+    .where(eq(workouts.userId, userId))
+    .orderBy(desc(sql`DATE(${workouts.startedAt})`));
+
+  if (rows.length === 0) return { current: 0, longest: 0 };
+
+  const workoutDays = new Set(rows.map((r) => r.day));
+  const today = format(new Date(), "yyyy-MM-dd");
+
+  let current = 0;
+  let cursor = new Date();
+  if (!workoutDays.has(today)) {
+    cursor = subDays(cursor, 1);
+  }
+  while (workoutDays.has(format(cursor, "yyyy-MM-dd"))) {
+    current++;
+    cursor = subDays(cursor, 1);
+  }
+
+  const sortedDates = rows.map((r) => r.day).reverse();
+  let longest = 0;
+  let runLength = 1;
+  for (let i = 1; i < sortedDates.length; i++) {
+    const prev = new Date(sortedDates[i - 1]);
+    const curr = new Date(sortedDates[i]);
+    const diffDays = Math.round(
+      (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays === 1) {
+      runLength++;
+    } else {
+      longest = Math.max(longest, runLength);
+      runLength = 1;
+    }
+  }
+  longest = Math.max(longest, runLength);
+
+  return { current, longest };
 }

@@ -16,6 +16,7 @@ import { relations } from 'drizzle-orm';
 export const exercises = pgTable('exercises', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull().unique(),
+  muscleGroup: text('muscle_group'), // nullable — exercises added via UI will be null
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
