@@ -31,7 +31,7 @@ export function VolumeTrendChart({ data, year, exerciseList, selectedExercise }:
     volume: Math.round(d.volume),
   }));
 
-  function handleExerciseChange(exercise: string) {
+  function handleExerciseChange(exercise: any) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("exercise", exercise);
     router.push(`?${params.toString()}`);
